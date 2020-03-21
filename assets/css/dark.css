@@ -1,0 +1,53 @@
+
+body{color:#eee;background-color:#3c3a3a;}
+a{color:#4690c8;}
+input:focus,.main {color:#eee;background-color: #2c2a2a;}
+.header{background:#171818;background-image:none;}
+.topTags{background-color:#3c3a3a;border:1px solid #242424;}
+.topTags select{background-color:#5c5a5a;color:#eee;}
+.upDate strong{color: #eaeaea}
+#menu li ul{opacity:1;background:#3c3a3a;border:0;}
+#menu ul li>a{background:rgba(255,255,255,0.3);color:#eee;}
+.icon-heartbeat{color: #fff;}
+#loginForm, #loginPanel, #registerForm{background:#2c2a2a;border:1px solid #666;}
+#loginForm input, #registerForm input{border:1px solid #6a6c6c;}
+#loginPanel li a{color: #eee;}#loginPanel li a:hover{background: none;}
+
+
+.content{border-right: 1px dashed #999;}
+.sidebar li,.sidebar li:last-child{border-bottom:1px solid #666;}
+.sideTabs label{background:#bbb;}
+.rcl_txt{background: #666;color: #dfdfdf;}.rcl_meta{color: #cacaca;}
+.reply2view{background: #242424;border:1px solid #666;}
+
+.page-navigator li a{padding:3px 10px;border:1px solid #222;background:#444;}
+.page-navigator li a:hover,.page-navigator .current a{background:#222;text-decoration:none;color:#fff}
+
+.dlist li:nth-of-type(odd){ background:#3c3a3a;}
+.dlist li:nth-of-type(even){ background:#2c2a2a;}
+.dlist li:hover{background:#000}
+.archive blockquote{background:#2c2a2a;color:#eee;box-shadow:none;}
+.archive input{background:#3c3a3a;box-shadow:0 0 2px ccc;color:#eee;}
+.footer{border-top:1px solid #454545;background:#2c2a2a;}
+
+
+.bread_nav a,.bread_nav{color:#aaa;}
+.user-level-0,.prompt{background:#3c3a3a;border:1px solid #888;}
+.slide-box-inner{background:#2c2a2a;}
+.input-group-addon,.input-group .comment-input{background:#3c3a3a;color:#bababa;}
+.textarea{color: #ddd;}
+@media screen and (min-width:895px){
+.introduction{background:#3c3a3a;color:#aaa;}
+}
+
+@media only screen and (max-width:1140px){
+
+	.content,.sidebar{background:#2c2a2a;border:0;}
+	#menu,#menu ul li a,#menu li{background-image:none;background:#222;}
+	#menu ul li a:hover{background:rgba(255,255,255,.3);}  
+}
+@media screen and (max-width:895px){
+.slide-box-wrap{border-bottom: 1px solid #7a7c7c;}
+
+    
+}
