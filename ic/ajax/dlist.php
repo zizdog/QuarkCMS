@@ -1,7 +1,7 @@
 <?php
 $q = isset($_GET["q"]) ? intval($_GET["q"]) : ''; 
 //$con=mysqli_connect("localhost","db_user","my_password","my_db"); 
-//下面填写数据库信息，非常重要，否则下载地址无法加载
+//下面填写数据库信息，必须，否则下载地址无法加载
 $con=mysqli_connect("localhost","数据库用户名","数据库密码","数据库名"); 
 
 if (!$con)
