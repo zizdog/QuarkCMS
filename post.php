@@ -1,7 +1,12 @@
 <?php $this->need('header.php'); ?>
 <div class="bread_nav">
-<a href="<?php $this->options->siteUrl(); ?>"><i class="iconfont icon-home"></i>首页</a>&nbsp;&raquo;&nbsp;<?php $this->category(' , ');?>&nbsp;&raquo;&nbsp;《<?php $this->title() ?>》&nbsp;&raquo;&nbsp;正文<?php if($this->user->uid==$this->author->uid && $this->user->hasLogin()): ?><i class="iconfont icon-eye"></i><?php views($this) ?>
-      <a href="<?php $this->options->adminUrl(); ?>write-post.php?cid=<?php echo $this->cid;?>">&nbsp;<i class="iconfont icon-edit"></i></a>
+<a href="<?php $this->options->siteUrl(); ?>"><i class="iconfont icon-home"></i>首页</a>&nbsp;&raquo;&nbsp;<?php $this->category(' , ');?>&nbsp;&raquo;&nbsp;《<?php $this->title() ?>》&nbsp;&raquo;&nbsp;正文
+	<?php if($this->user->uid==$this->author->uid && $this->user->hasLogin()): ?>
+	<i class="iconfont icon-eye"></i>
+	<?php views($this) ?>
+    <a href="<?php $this->options->adminUrl(); ?>write-post.php?cid=<?php echo $this->cid;?>">
+    	&nbsp;<i class="iconfont icon-edit"></i>
+    </a>
     <?php endif;?>
 </div>
 <div class="p s">
