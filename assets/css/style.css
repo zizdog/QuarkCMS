@@ -240,7 +240,7 @@ padding:0 0 .75rem 0;border-top:0}
 .ziz-theme:hover{background:  #a00;}
 .goTop{position:fixed;right:0;bottom:60px;}
 .goTop a{background:#37a;color:#fff;padding:10px}
-.goTop a:hover{padding-right: 2rem;}
+/*.goTop a:hover{padding-right: 2rem;}*/
 
 /*==== ComentForm Style====*/
 #comments{margin:1rem 0 2.65rem 0}
