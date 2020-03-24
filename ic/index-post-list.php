@@ -2,8 +2,8 @@
 <div class="post-list-inner">
 <?php if ($this->have()): ?>
 <?php while($this->next()): ?>
-<a class="item" href="<?php $this->permalink() ?>">
-  <div class="thumb"><img src="<?php $this->options->themeUrl('assets/img/df.png'); ?>" data-src="<?php echo $this->fields->thumb;?>" alt="<?php $this->title();?>"></div>
+<a class="item" href="<?php $this->permalink() ?>" title="<?php $this->title();?>">
+  <div class="thumb"><img src="<?php $this->options->themeUrl('assets/img/df.png'); ?>" data-src="<?php thumb($this);?>" alt="<?php $this->title();?>"></div>
   <p>
    <?php if(timeZone($this->date->timeStamp)) echo '<span class="new">新</span>';?>
    <?php if(($this->fields->plist)||($this->fields->plist2)) echo '<span class="play">播</span> ';?>

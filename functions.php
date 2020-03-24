@@ -118,14 +118,14 @@ function themeFields($layout) {
 }
 
 
-//2 判断文章是否为最近更新
+//1 判断文章是否为最近更新
 /*<?php if(timeZone($this->date->timeStamp)) echo '<span class="ziz-title-new">新</span>';?>*/
 function timeZone($from){
 $now = new Typecho_Date(Typecho_Date::gmtTime());
 return $now->timeStamp - $from < 1*24*60*60 ? true : false;//1是天数
 }
 
-//3 前台用户统计
+//2 前台用户统计
 function lognum(){
     $time = time() - 14*24*60*60; //最近两周登陆的
     $db = Typecho_Db::get();
@@ -170,14 +170,25 @@ function lognum(){
 
 
 
-// 4 
+// 3 缩略图功能 
 
 function thumb($widget){
-if (preg_match_all('/\<img.*?src\=\"(.*?)\"[^>]*>/i', $widget->content, $thumbUrl)) {$ctu = $thumbUrl[1][0];}
-return $ctu;
+$dImg = Typecho_Widget::widget('Widget_Options')->themeUrl. '/assets/img/df.png';
+if($widget->fields->thumb){
+    $ctu = $widget->fields->thumb;
+}elseif (preg_match_all('/\<img.*?src\=\"(.*?)\"[^>]*>/i', $widget->content, $thumbUrl)) {
+    $ctu = $thumbUrl[1][0];
+}elseif (preg_match_all('/\!\[.*?\]\((http(s)?:\/\/.*?(jpg|png))/i', $widget->content, $patternMD)) {
+    $ctu = $patternMD[1][0];
+}elseif (preg_match_all('/\[.*?\]:\s*(http(s)?:\/\/.*?(jpg|png))/i', $widget->content, $patternMDfoot)) {
+    $ctu = $patternMDfoot[1][0];
+}else{
+    $ctu = $dImg;
+}
+echo $ctu;
 }
 
-//5 热评文章（N天内获得评论数量最多的内容）
+//4 热评文章（N天内获得评论数量最多的内容）
 /*调用<?php hotCommentPosts(60,5);?>*/
 function hotCommentPosts($days = 30,$num = 5){
     $defaults = array(
@@ -201,8 +212,8 @@ function hotCommentPosts($days = 30,$num = 5){
         echo $defaults['after'];
 }
 
-// 12-0 输出随机文章并输出文章内的第一张图（thumb字段方法）
-function randPosts0(){
+// 5 输出随机文章并输出文章的缩略图(thumb字段>HTML5图片>Markdown内联式图片>Markdown脚部式图片>默认图）
+function randPosts(){
     $options = Typecho_Widget::widget('Widget_Options');
     $dImg = $options->themeUrl. '/assets/img/df.png';
     $defaults = array(
@@ -220,66 +231,45 @@ function randPosts0(){
         ->order('RAND()');
     $result = $db->fetchAll($sql);
     echo $defaults['before'];
+
     foreach($result as $val){
+        //取对应cid对应的fields中的thumb值作为缩略图
         $val = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($val);
-            preg_match_all("/\<img.*?src\=\"(.*?)\"[^>]*>/i", $val['text'], $matches);
-                $imgCount = count($matches);
-                if($imgCount > 0){
-                    $img=$matches[1][0];
-                }else{
-                    $img=$dImg;
-                }
-        echo str_replace(array('{permalink}', '{title}','{img}','{dImg}'),array($val['permalink'], $val['title'],$img,$dImg), $defaults['xformat']);
-    }
-    echo $defaults['after'];
-}
-//内容丢失，写不出来了，哎~~~
-
-
-// 12 输出随机文章并输出文章内的第一张图（图片取自文章内）
-
-function randPosts(){
-    $options = Typecho_Widget::widget('Widget_Options');
-    $dImg=$options->themeUrl. '/assets/img/df.png';
-    $defaults = array(
-        'number' => 5,
-        'before' => '<div class="post-list rand-post-list"><div class="post-list-inner">',
-        'after' => '</div></div>',
-        'xformat' => '<a class="item" target="_blank" href="{permalink}" title="{title}"><div class="thumb"><img src="{dImg}" data-src="{img}" alt="{title}"></div><p>{title}</p></a>'
-    );
-
-    $db = Typecho_Db::get();
-
-    $sql = $db->select()->from('table.contents')
-        ->where('status = ?','publish')
-        ->where('type = ?', 'post')
-        ->where('created <= unix_timestamp(now())', 'post') //添加这一句避免未达到时间的文章提前曝光
-        ->limit($defaults['number'])
-        ->order('RAND()');
-    $result = $db->fetchAll($sql);
-
-    echo $defaults['before'];
-    foreach($result as $val){
-        $val = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($val);
-            preg_match_all("/\<img.*?src\=\"(.*?)\"[^>]*>/i", $val['text'], $matches);
-                $imgCount = count($matches);
-                if($imgCount > 0){
-                    $img=$matches[1][0];
-                }else{
-                    $img=$dImg;
-                }
+        $cid = $val['cid'];
+        $db1 = Typecho_Db::get();
+        $sql1 = $db1->select()->from('table.fields')
+            ->where('cid = ?',$cid)
+            ->where('name = ?', 'thumb')
+            ->limit(1);
+        $result1 = $db1->fetchAll($sql1);
+        $val1[0] = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($result1[0]);
+        $img=$result1[0]['str_value'];
+        //如果thumb为空，在文章内匹配
+        if ($img == ''){
+            preg_match_all('/\<img.*?src\=\"(.*?)\"[^>]*>/i', $val['text'], $thumbUrl);  //通过正则式获取图片地址
+            preg_match_all('/\!\[.*?\]\((http(s)?:\/\/.*?(jpg|png))/i', $val['text'], $patternMD);  //通过正则式获取图片地址
+            preg_match_all('/\[.*?\]:\s*(http(s)?:\/\/.*?(jpg|png))/i', $val['text'], $patternMDfoot);  //通过正则式获取图片地址
+            if(count($thumbUrl[0])>0){
+                $img = $thumbUrl[1][0];  //当找到一个src地址的时候，输出缩略图
+            }else if(count($patternMD[0])>0){
+                $img = $patternMD[1][0];
+            }else if(count($patternMDfoot[0])>0){
+                $img = $patternMDfoot[1][0];
+            }else{
+                $img=$dImg;
+            }
+        }
         echo str_replace(array('{permalink}', '{title}','{img}','{dImg}'),array($val['permalink'], $val['title'],$img,$dImg), $defaults['xformat']);
     }
     echo $defaults['after'];
 }
 
 
-
-// 12-1 热门文章：输出随机文章并输出文章内的第一张图（原thumb字段更改版）
+// 6 热门文章：并输出缩略图！！用作首页轮播推荐！！
 
 function hotPosts($days = 30,$num = 4){
     $options = Typecho_Widget::widget('Widget_Options');
-    //$dImg=$options->themeUrl. '/assets/img/df.png';
+    $dImg=$options->themeUrl. '/assets/img/df.png';
     $defaults = array(
         'before' => '',
         'after' => '<li><a href="http://blog.zizdog.com" target="_blank"><img src="http://link.zizdog.com/zizblog.jpg"/></a></li>',
@@ -300,20 +290,38 @@ function hotPosts($days = 30,$num = 4){
 
     echo $defaults['before'];
     foreach($result as $val){
+        //取对应cid对应的fields中的thumb值作为缩略图
         $val = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($val);
-            preg_match_all("/\<img.*?src\=\"(.*?)\"[^>]*>/i", $val['text'], $matches);
-                $imgCount = count($matches);
-                if($imgCount > 0){
-                    $img=$matches[1][0];
-                }else{
-                    $img=$dImg;
-                }
+        $cid = $val['cid'];
+        $db1 = Typecho_Db::get();
+        $sql1 = $db1->select()->from('table.fields')
+            ->where('cid = ?',$cid)
+            ->where('name = ?', 'thumb')
+            ->limit(1);
+        $result1 = $db1->fetchAll($sql1);
+        $val1[0] = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($result1[0]);
+        $img=$result1[0]['str_value'];
+        //如果thumb为空，在文章内匹配
+        if ($img == ''){
+            preg_match_all('/\<img.*?src\=\"(.*?)\"[^>]*>/i', $val['text'], $thumbUrl);  //通过正则式获取图片地址
+            preg_match_all('/\!\[.*?\]\((http(s)?:\/\/.*?(jpg|png))/i', $val['text'], $patternMD);  //通过正则式获取图片地址
+            preg_match_all('/\[.*?\]:\s*(http(s)?:\/\/.*?(jpg|png))/i', $val['text'], $patternMDfoot);  //通过正则式获取图片地址
+            if(count($thumbUrl[0])>0){
+                $img = $thumbUrl[1][0];  //当找到一个src地址的时候，输出缩略图
+            }else if(count($patternMD[0])>0){
+                $img = $patternMD[1][0];
+            }else if(count($patternMDfoot[0])>0){
+                $img = $patternMDfoot[1][0];
+            }else{
+                $img=$dImg;
+            }
+        }
         echo str_replace(array('{permalink}', '{title}','{img}'),array($val['permalink'], $val['title'],$img), $defaults['xformat']);
     }
     echo $defaults['after'];
 }
 
-// 13 浏览统计cookie版本
+// 7 浏览统计，cookie版本
 /*调用：<?php views($this) ?>*/
 function views($archive)
 {
@@ -327,15 +335,15 @@ function views($archive)
     }
     $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
     if ($archive->is('single')) {
- $views = Typecho_Cookie::get('extend_contents_views');
+        $views = Typecho_Cookie::get('extend_contents_views');
         if(empty($views)){
             $views = array();
         }else{
             $views = explode(',', $views);
         }
-if(!in_array($cid,$views)){
-       $db->query($db->update('table.contents')->rows(array('views' => (int) $row['views'] + 1))->where('cid = ?', $cid));
-array_push($views, $cid);
+        if(!in_array($cid,$views)){
+        $db->query($db->update('table.contents')->rows(array('views' => (int) $row['views'] + 1))->where('cid = ?', $cid));
+        array_push($views, $cid);
             $views = implode(',', $views);
             Typecho_Cookie::set('extend_contents_views', $views); //记录查看cookie
         }
@@ -345,7 +353,7 @@ array_push($views, $cid);
 }
 
 
-// 14 热门文章（N天内点击最多的内容）结合13浏览统计
+// 8 热门文章（N天内点击最多的内容）结合7浏览统计：轻松实现，月度、年度、总热门文章
 /*调用<?php zizHotViews(60,5);?>*/
 function hotViews($days = 30,$num = 5){
     $defaults = array(
@@ -369,7 +377,7 @@ function hotViews($days = 30,$num = 5){
         echo $defaults['after'];
 }
 
- // 15 加载时间(调用  echo timer_stop();
+ // 9 加载时间(调用  echo timer_stop();
 
     function timer_start() {
         global $timestart;
@@ -390,7 +398,7 @@ function hotViews($days = 30,$num = 5){
         return $r;
     }
     
-// 16 网站运行时间
+// 10 网站运行时间
 date_default_timezone_set('Asia/Shanghai');//设置时区
 /**
  * 秒转时间，格式 年 月 日 时 分 秒

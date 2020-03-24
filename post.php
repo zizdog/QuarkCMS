@@ -19,7 +19,7 @@
 <span><?php views($this) ?></span>
 </p>
 
-<img class="thumbnail" src="<?php echo $this->fields->thumb;?>">
+<img class="thumbnail" src="<?php thumb($this);?>">
 <p><?php echo $this->fields->info;?></p>
 <div class="introduction"><?php echo $this->fields->intro;?></div>
 <?php //$this->content(); ?>
