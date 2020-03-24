@@ -11,5 +11,6 @@
 <div class="goTop"><a href="#header">顶</a></div>
 <script src="<?php $this->options->themeUrl('assets/js/QuarkCMS.js'); ?>"></script>
 <?php $this->footer(); ?>
+
 </body>
 </html>

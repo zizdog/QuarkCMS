@@ -1,12 +1,11 @@
 <?php
 $q = isset($_GET["q"]) ? intval($_GET["q"]) : ''; 
-//$con=mysqli_connect("localhost","db_user","my_password","my_db"); 
-//下面填写数据库信息，必须，否则下载地址无法加载
-$con=mysqli_connect("localhost","数据库用户名","数据库密码","数据库名"); 
 
+//$con=mysqli_connect("localhost","数据库用户名","数据库密码","数据库名"); 
+$con=mysqli_connect("localhost","v_zizdog_cn","syc160323","v_zizdog_cn");
 if (!$con)
 {
-    die('Could not connect: ' . mysqli_error($con));
+    die('数据获取失败:请检查"ic/ajax/dlist.php"中数据库配置 ' . mysqli_error($con));
 }
 // 设置编码，防止中文乱码
 mysqli_set_charset($con, "utf8");

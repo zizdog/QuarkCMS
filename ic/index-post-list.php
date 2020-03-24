@@ -6,7 +6,7 @@
   <div class="thumb"><img src="<?php $this->options->themeUrl('assets/img/df.png'); ?>" data-src="<?php echo $this->fields->thumb;?>" alt="<?php $this->title();?>"></div>
   <p>
    <?php if(timeZone($this->date->timeStamp)) echo '<span class="new">新</span>';?>
-   <?php if($this->fields->plist) echo '<span class="play">播</span> ';?>
+   <?php if(($this->fields->plist)||($this->fields->plist2)) echo '<span class="play">播</span> ';?>
    <?php $this->title() ?>
   </p>
 </a>

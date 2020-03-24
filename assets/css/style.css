@@ -94,7 +94,8 @@ ol,ul{list-style:none}
 
 /*----- Search----*/
 #search{float: right;height: 22px;margin-top:18px;width: 180px;position: relative;right: 15px;}
-.s-text{background:0;width:175px;border:1px solid #fff;height:20px;padding-left: 7px;border-radius: 10px;color:#fff;box-shadow: 0 0 3px #fff;}
+.s-text{background:rgba(255,255,255,.2);width:175px;border:1px solid #fff;height:20px;padding-left: 7px;border-radius: 10px;color:#fff;box-shadow: 0 0 3px #fff;}
+.s-text:focus{background: 0;}
 .s-button{position: absolute;font-size:14px;right: 0;top:3px;background: 0;color: #fff;cursor: pointer;}
 
 /*--- Bread Nav in unactived--*/
@@ -147,7 +148,7 @@ text-align: center;margin: 0 20px 10px 0;width:155px;}
 .p h4{margin:15px 0;font-weight:bold;}
 .page h2{font-size:1.8em;border-left:3px solid #37a;padding-left:7px;}.page h3{border-left:3px solid #37a;padding-left:7px;}
 /*-----  DownLoad Link List  ------*/
-#DList button,#player-next button { background-color: #4CAF50; cursor: pointer;color: white;padding: 15px 40px;text-align: center;font-size: 16px;}
+#DListButton,#player-next button { background-color: #4CAF50; cursor: pointer;color: white;padding: 15px 0;text-align: center;font-size: 16px;width: 100%;}
 .dlist{padding:0;margin:15px 0;border-top:2px solid #ccc;border-bottom: 2px solid #ccc;}
 .dlist li{line-height:34px;position: relative;padding:0 45px 0 7px;list-style-type:none;}
 .dlist li:nth-of-type(odd){ background:#f0f0f0;}

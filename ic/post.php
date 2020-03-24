@@ -1,10 +1,8 @@
 
 
-		<?php if ($this->fields->dlist):?>
-			<h3><i class="iconfont icon-download"></i>下载链接</h3>
-			<p>下载软件的选择请参考下面的下载提示</p>
+	<?php if ($this->fields->dlist):?>
 		<?php if ($this->fields->plist):?>
-			<div class="dlist"><?php $this->fields->dlist();?></div>
+			
 			<hr id="post-title-play">
 			<h3><i class="iconfont icon-film"></i>在线播放</h3>
 			<p>手机观看如果无法加载视频，请尝试用电脑观看，或下载后观看。</p>
@@ -42,15 +40,38 @@
 			</script>
 			<div id="player-next"></div>
 			<script src="<?php $this->options->themeUrl('assets/js/play.js'); ?>" async="async"></script>
-		<?php else: ?>	
 
-		<script src="<?php $this->options->themeUrl('ic/ajax/dlist.js'); ?>"></script>
-		<script>var isLTL=true;</script>
-		<div id="DList">
-		    <button id="DListButton" onclick="if(isLTL){showDList(<?php $this->cid(); ?>);isLTL=false;}">点此显示下载链接</button>
-		</div>
+			<h3><i class="iconfont icon-download"></i>下载链接</h3>
+			<p>下载软件的选择请参考下面的下载提示</p>
+			<div class="dlist"><?php $this->fields->dlist();?></div>
+
+		<?php else: ?>
+			<?php if ($this->fields->plist2):?>
+				<h3><i class="iconfont icon-film"></i>在线播放</h3>
+				<p>手机观看如果无法加载视频，请尝试用电脑观看，或下载后观看。</p>
+				<div id="ziz-video">
+				<?php $this->fields->plist2(); ?>
+				</div>
+				<script type="text/javascript">
+					var ziz_v_w = document.getElementById('ziz-video').offsetWidth;
+					var ziz_v_h = ziz_v_w/16*9;
+					document.getElementById("ziz-video").style.height=ziz_v_h;
+				</script>
+			<?php endif;?>
+			<h3><i class="iconfont icon-download"></i>下载链接</h3>
+			<script src="<?php $this->options->themeUrl('ic/ajax/dlist.js'); ?>"></script>
+			<script>var isLTL=true;</script>
+			<div id="DList">
+			    <button id="DListButton" onclick="if(isLTL){showDList(<?php $this->cid(); ?>);isLTL=false;}">点此显示下载链接</button>
+			</div>
 		<?php endif;?>
-		<?php endif;?>
+	<?php endif;?>
+
+
+
+
+
+
 
 
 

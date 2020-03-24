@@ -94,6 +94,7 @@ function themeInit($archive)
 
 // 预置文章字段，包括加精、加火、设置会员权限
 function themeFields($layout) {
+    /*
     $rate = new Typecho_Widget_Helper_Form_Element_Text('rate', NULL, NULL, _t('电影评分'), _t('0到10的数值，保留一位小数'));
     $layout->addItem($rate);
     $year = new Typecho_Widget_Helper_Form_Element_Text('year', NULL, NULL, _t('电影年代'));
@@ -108,6 +109,7 @@ function themeFields($layout) {
     $layout->addItem($plist);
     $dlist = new Typecho_Widget_Helper_Form_Element_Text('dlist', NULL, NULL, _t('下载列表'), _t('严格对应格式：<br>[li][span class="title"]第01集[/span][span class="ziz_dl_title"]https://qq.com-ok-qq.com/20191002/24065_f5d9c610/index.m3u8[/span][button class="btn" value="https://qq.com-ok-qq.com/20191002/24065_f5d9c610/index.m3u8" data-clipboard-text="https://qq.com-ok-qq.com/20191002/24065_f5d9c610/index.m3u8"]复制[/button][/li]'));
     $layout->addItem($dlist);
+    */
     $jing = new Typecho_Widget_Helper_Form_Element_Radio('jing', array(1 => _t('加精&nbsp;&nbsp;&nbsp;'),0 => _t('不加(默认)'),),0, _t('是否加精'));
     $layout->addItem($jing);
     $huo = new Typecho_Widget_Helper_Form_Element_Radio('huo', array(1 => _t('加火&nbsp;&nbsp;&nbsp;'),0 => _t('不加(默认)'),),0, _t('是否加火'));
@@ -199,9 +201,42 @@ function hotCommentPosts($days = 30,$num = 5){
         echo $defaults['after'];
 }
 
+// 12-0 输出随机文章并输出文章内的第一张图（thumb字段方法）
+function randPosts0(){
+    $options = Typecho_Widget::widget('Widget_Options');
+    $dImg = $options->themeUrl. '/assets/img/df.png';
+    $defaults = array(
+        'number' => 5,
+        'before' => '<div class="post-list rand-post-list"><div class="post-list-inner">',
+        'after' => '</div></div>',
+        'xformat' => '<a class="item" target="_blank" href="{permalink}" title="{title}"><div class="thumb"><img src="{dImg}" data-src="{img}" alt="{title}"></div><p>{title}</p></a>'
+    );
+    $db = Typecho_Db::get();
+    $sql = $db->select()->from('table.contents')
+        ->where('status = ?','publish')
+        ->where('type = ?', 'post')
+        ->where('created <= unix_timestamp(now())', 'post') //添加这一句避免未达到时间的文章提前曝光
+        ->limit($defaults['number'])
+        ->order('RAND()');
+    $result = $db->fetchAll($sql);
+    echo $defaults['before'];
+    foreach($result as $val){
+        $val = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($val);
+            preg_match_all("/\<img.*?src\=\"(.*?)\"[^>]*>/i", $val['text'], $matches);
+                $imgCount = count($matches);
+                if($imgCount > 0){
+                    $img=$matches[1][0];
+                }else{
+                    $img=$dImg;
+                }
+        echo str_replace(array('{permalink}', '{title}','{img}','{dImg}'),array($val['permalink'], $val['title'],$img,$dImg), $defaults['xformat']);
+    }
+    echo $defaults['after'];
+}
+//内容丢失，写不出来了，哎~~~
 
 
-// 12 输出随机文章并输出文章内的第一张图（原thumb字段更改版）
+// 12 输出随机文章并输出文章内的第一张图（图片取自文章内）
 
 function randPosts(){
     $options = Typecho_Widget::widget('Widget_Options');
@@ -240,7 +275,7 @@ function randPosts(){
 
 
 
-// 12-1 输出随机文章并输出文章内的第一张图（原thumb字段更改版）
+// 12-1 热门文章：输出随机文章并输出文章内的第一张图（原thumb字段更改版）
 
 function hotPosts($days = 30,$num = 4){
     $options = Typecho_Widget::widget('Widget_Options');
