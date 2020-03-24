@@ -2,7 +2,7 @@
 $q = isset($_GET["q"]) ? intval($_GET["q"]) : ''; 
 
 //$con=mysqli_connect("localhost","数据库用户名","数据库密码","数据库名"); 
-$con=mysqli_connect("localhost","v_zizdog_cn","syc160323","v_zizdog_cn");
+$con=mysqli_connect("localhost","x","x","x");
 if (!$con)
 {
     die('数据获取失败:请检查"ic/ajax/dlist.php"中数据库配置 ' . mysqli_error($con));
